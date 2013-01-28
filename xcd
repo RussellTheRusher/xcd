@@ -1,0 +1,51 @@
+#! /bin/bash
+# vim: set nu ai sw=4 ts=4 tw=79:
+
+# find .russell.xcd in pwd up to /
+function xcd_find {
+	local p=`pwd`
+	while true
+	do
+		if [ -r  $p/.russell.xcd ]
+		then
+			echo "$p"
+			return 0
+		elif [ "$p" = '' ]
+		then
+			if [ -r "$p"/.russell.xcd ]
+			then
+				echo "/"
+				return 0
+			else
+				echo 1
+				return 1
+			fi
+		else
+			p=${p%/*}
+		fi
+	done
+}
+
+function xcd_list {
+local p=$(xcd_find)
+#xcd_find
+if [ $p -eq 1 ]
+then
+	echo "None"
+else
+	echo "$p"
+fi
+}
+
+echo Russell
+set -- -l
+while getopts ":s:p:l" opt
+do
+	case $opt in
+		l) xcd_list
+			;;
+		?) echo "Error option!"
+			;;
+	esac
+done 
+
